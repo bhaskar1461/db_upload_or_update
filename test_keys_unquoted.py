@@ -1,0 +1,31 @@
+import os
+import sys
+import httpx
+import urllib.parse
+from openai import OpenAI
+
+sys.path.append(r"c:\Users\bhask\Desktop\Archive\New folder\exam_notes_generator")
+from core.llm_client import generate_with_llm
+
+token_with_xgw = "bedrock-api-key-YmVkcm9jay5hbWF6b25hd3MuY29tLz9BY3Rpb249Q2FsbFdpdGhCZWFyZXJUb2tlbiZYLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFTSUFXVFhWM0M1M0dKRlBSNFdaJTJGMjAyNjA2MjAlMkZ1cy1lYXN0LTElMkZiZWRyb2NrJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNjA2MjBUMTI0MDQ0WiZYLUFtei1FeHBpcmVzPTQzMjAwJlgtQW16LVNlY3VyaXR5LVRva2VuPUlRb0piM0pwWjJsdVgyVmpFQTBhQ1hWekxXVmhjM1F0TVNKSE1FVUNJUUR1JTJCbXRobGxFazlaUUgya3J0eUpDcWd2b2JGcXRHR1IlMkJNMFN4cDV0JTJGMGNnSWdTaEJFYmdzcEZaN1hab2ZES2R6ZVZmN1hEWk5vOGJSaW5pT2wwTksxek5jcXNnTUkxdiUyRiUyRiUyRiUyRiUyRiUyRiUyRiUyRiUyRiUyRkFSQUFHZ3cwTlRRM01EZ3pOamt5TnpBaURCOWx5c1Zua1h3azdrJTJGa0ZpcUdBJTJGS3IlMkJ1bzNmJTJGTnRkcmJZcm0zTGJ0M0RxS2dVY05zaFpzbWFBOFcyUmtaSVRwYXQlMkJHZUNJaWZQcFBFMGhHZW5CampqamdvOHNOSTlYaVJGSWFIeEQzSDZ6cG5JZktKJTJCTldwUVBWNWhpU0dtSWZoSmhSMExxWHJFb29KYTZYbmNkRUVuVlUlMkJmY2lXcHhlazJONnFrMDZSS200Z1F5SklVZ1NKdzFvOVdhd0c3WmtkWGExelFzdUJSdHAxbjNjMVNWSHFFZEwxOHFMeEVuVkY1b0NxU3lZdjJ5NnNuM281MWRNWjNxNGN3YVlkdVRMQ0xISXhBWk9qeExJaXNpV0hlNlRhYldPcER0SkolMkY4Yk9SblFiVGZqRUJoTW8lMkJYR1clMkJNTnclMkZCNzl0U3JvWFZDMGtXTXFQWEFWbVNZOTdPcGkzdFhtJTJGJTJGMTJDdmpqWjRuelNKWDFmZlRBVTlyVEFaYk94MUpGUFkwWnRyYUdsYjI4R0pZaFFtMUZxV2hsNmM5YW5ucFlOZERheHVLM2xDWjNaTklVZXdMQmRJZmgyYU01amdKWldDYjQ1b3dNWnhtbXZPODRYZnV2NjJhZ3FKcTZwVm1XVSUyQmIwc0VMOWowaGhKQkN4Qjh6TSUyQllJYUZTJTJCNmlOUEJVcXZFUzZ6RURGdFI3N0glMkJRdzk3UFBaY255aUFSRXBnWmRPc3NuekMxbE5yUkJqcmVBaSUyRm5RYVhvTG5PaUdoODJRTjh0MnlXTCUyRlglMkI5VUxqcjRRZ3lKWnpkSjFseXQ0dkg0NlFzZXRZTmVWQ3B5cGFMMUc5dDNXcU9VM1lEMTRKS1ZXSW9LWW9ETEc0JTJCYmk4JTJGY1dMSGVyeDJMTkFMSWJ2eiUyRjZ0VjZkRXJTSGJNZk9vejE1MUpmc3FreWFOR21CdERTTmpia1FhNWhGek12Zm01cWh0T1ElMkZ6Z3klMkJlUTlvRlJWME5Sb2ZjRFMzYlZUM0RGbkptcWJGdEJKSlh3eUNVRUpENnFiUEFKa3AyNDVuOE9hRlUlMkZwUEczcXkyJTJCciUyQmJWc2luMXdGeWVPTGxTcUFtZmRQZVVPS1ZhV0dhZ1VkdVV2ZGtlRzNKRmoxalBmUVNwZGlmRFplb08lMkI3eUR6VjU3Y2hBanR3Yzdld0p2UnZ3aUx1U2l3ekVBJTJCN2dxZwhoQURiTCUyQnUzTVVPNjNFMCUyRiUyQkJVVGttVFFIRFExUkhGVEk4T0Y2d2NCcWJaZ0ZRWlA5TWlYVHNIcUxkYTJoZEc2Y0tjSWx6ejBWUGIlMkJ5RDVabTJheXhubFBXNmlnaWlhcGhzb3UlMkZWdU9YQ1ZrYmpJbW05c3FqQzRqMUclMkJwdmxUWUpkVFZnQSZYLUFtei1TaWduYXR1cmU9ZGVhODVjNDE4YjMxYzI3N2JkZjVkNWUyNDE5OWIwY2VlOTdmNDQzOGUyOWI2MjNiMjkwY2FmM2UyYWZlOGZkMiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmVmVyc2lvbj0x"
+
+token_with_gw = token_with_xgw.replace("BhMo%2BXGW", "BhMo%2BgW")
+
+def test_token(tok, label):
+    print(f"\n--- Testing: {label} ---")
+    os.environ["BEDROCK_API_KEY"] = tok
+    os.environ["BEDROCK_REGION"] = "us-east-1"
+    os.environ["BEDROCK_MODEL"] = "deepseek.v3.2"
+    try:
+        res = generate_with_llm("You are a helpful assistant.", "Say hello world.", 0.1, 10, 1024)
+        print("SUCCESS! Output:", res)
+        return True
+    except Exception as e:
+        print("FAILED:", str(e))
+        return False
+
+# Run variants
+test_token(token_with_xgw, "Token with XGW")
+test_token(urllib.parse.unquote(token_with_xgw), "Unquoted Token with XGW")
+test_token(token_with_gw, "Token with gW")
+test_token(urllib.parse.unquote(token_with_gw), "Unquoted Token with gW")

@@ -1,0 +1,52 @@
+# Environments
+.env
+.venv/
+env/
+venv/
+ENV/
+
+# Python Cache & Builds
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Large Installers & Binaries
+*.exe
+*.zip
+*.msi
+*.cab
+*.pdf
+
+# DB Backups & SQL Dumps
+*.sql
+database_export.md
+
+# Large Content & Resource Folders
+Textbooks/
+English/
+Hindi/
+Class 9/
+Generated_Exam_PDFs/
+Generated_Exam_PDFs_OLD_FORMAT_BACKUP/
+output/
+scratch_downloads/
+scratch/scratch_downloads/
+
+# RAG Cache & Generated Cache files
+rag_cache_Class_*.json
+
+# Logs
+*.log
+batch_generation.log
+textbook_download_log.txt
+exam_notes_generator/logs/
+
+# ChromaDB data storage
+exam_notes_generator/data/
+
+# IDE files
+.vscode/
+.idea/

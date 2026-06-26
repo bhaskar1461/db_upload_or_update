@@ -1,0 +1,67 @@
+{
+  "name": "my-antigravity-extension",
+  "displayName": "My Antigravity Extension",
+  "description": "A basic boilerplate extension using the Antigravity SDK",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "my-antigravity-extension.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "my-antigravity-extension.askBedrock",
+        "title": "Ask Bedrock"
+      }
+    ],
+    "configuration": {
+      "title": "Bedrock Configuration",
+      "properties": {
+        "bedrock.accessKeyId": {
+          "type": "string",
+          "default": "",
+          "description": "AWS Access Key ID"
+        },
+        "bedrock.secretAccessKey": {
+          "type": "string",
+          "default": "",
+          "description": "AWS Secret Access Key"
+        },
+        "bedrock.region": {
+          "type": "string",
+          "default": "us-east-1",
+          "description": "AWS Region"
+        },
+        "bedrock.modelId": {
+          "type": "string",
+          "default": "anthropic.claude-3-opus-20240229-v1:0",
+          "description": "Bedrock Model ID to use (e.g., anthropic.claude-3-opus-20240229-v1:0)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "20.x",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1053.0",
+    "antigravity-sdk": "file:../antigravity-sdk"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "puter_bridge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@heyputer/puter.js": "^2.3.4",
+    "express": "^5.2.1"
+  }
+}
